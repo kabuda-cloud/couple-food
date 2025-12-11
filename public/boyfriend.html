@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小可爱的订单 📋</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Ma Shan Zheng', cursive, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 3px solid #a78bfa;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '❤️';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.05;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .header h1 {
+            color: #764ba2;
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 0px rgba(118, 75, 162, 0.2);
+            position: relative;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .connection-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 25px;
+            background: #f8f9fa;
+            border-radius: 30px;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            border: 2px solid #e9ecef;
+        }
+        
+        .status-indicator {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ccc;
+        }
+        
+        .status-indicator.connected {
+            background: #4CAF50;
+            box-shadow: 0 0 10px #4CAF50;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .orders-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            border: 3px solid #a78bfa;
+        }
+        
+        .preferences-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            border: 3px solid #a78bfa;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .section-title {
+            color: #764ba2;
+            margin-bottom: 25px;
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 3px solid #e9ecef;
+            padding-bottom: 15px;
+        }
+        
+        .section-title i {
+            color: #ff6b6b;
+        }
+        
+        .orders-container {
+            min-height: 400px;
+        }
+        
+        .no-orders {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+        
+        .no-orders i {
+            font-size: 80px;
+            margin-bottom: 20px;
+            color: #ddd;
+            opacity: 0.7;
+        }
+        
+        .no-orders h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #aaa;
+        }
+        
+        .no-orders p {
+            font-size: 1.2em;
+            color: #bbb;
+        }
+        
+        .order-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-left: 6px solid #667eea;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .order-card.new-item {
+            border-left-color: #FF9800;
+            animation: highlight 2s;
+        }
+        
+        .order-card.complete-order {
+            border-left-color: #4CAF50;
+        }
+        
+        @keyframes highlight {
+            0% { background-color: rgba(255, 193, 7, 0.1); }
+            100% { background-color: white; }
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .order-type {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .order-badge {
+            background: #667eea;
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .order-badge.item {
+            background: #FF9800;
+        }
+        
+        .order-badge.complete {
+            background: #4CAF50;
+        }
+        
+        .order-time {
+            color: #888;
+            font-size: 15px;
+            background: #f8f9fa;
+            padding: 5px 12px;
+            border-radius: 15px;
+        }
+        
+        .order-message {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 4px solid #764ba2;
+        }
+        
+        .order-items {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        
+        .order-item-name {
+            font-weight: bold;
+            color: #764ba2;
+            font-size: 18px;
+        }
+        
+        .order-item-price {
+            color: #666;
+            font-size: 16px;
+            min-width: 80px;
+            text-align: right;
+        }
+        
+        .order-total {
+            text-align: right;
+            font-weight: bold;
+            font-size: 1.5em;
+            color: #764ba2;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e9ecef;
+        }
+        
+        .preferences-list {
+            margin-top: 20px;
+        }
+        
+        .preference-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+        
+        .preference-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .preference-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        
+        .preference-icon.likes {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            color: #1976d2;
+        }
+        
+        .preference-icon.dislikes {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            color: #d32f2f;
+        }
+        
+        .preference-text {
+            flex: 1;
+        }
+        
+        .preference-title {
+            font-weight: bold;
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .preference-desc {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            transform: translateX(150px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 3000;
+            border-left: 6px solid #667eea;
+            max-width: 400px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .notification.new-order {
+            border-left-color: #FF9800;
+        }
+        
+        .notification.complete-order {
+            border-left-color: #4CAF50;
+        }
+        
+        .notification i {
+            font-size: 28px;
+        }
+        
+        .notification.new-order i {
+            color: #FF9800;
+        }
+        
+        .notification.complete-order i {
+            color: #4CAF50;
+        }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 2px solid #a78bfa;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #764ba2;
+            font-family: 'ZCOOL QingKe HuangYou', sans-serif;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 16px;
+            margin-top: 5px;
+        }
+        
+        .clear-orders {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+            transition: all 0.3s;
+            z-index: 100;
+        }
+        
+        .clear-orders:hover {
+            background: #ff5252;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(255, 107, 107, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2em;
+            }
+            
+            .main-content {
+                gap: 20px;
+            }
+            
+            .orders-section,
+            .preferences-section {
+                padding: 20px;
+            }
+            
+            .stats-bar {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .notification {
+                left: 20px;
+                right: 20px;
+                max-width: calc(100% - 40px);
+            }
+            
+            .clear-orders {
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .order-time {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-heart" style="color: #ff6b6b;"></i> 小可爱的订单 <i class="fas fa-heart" style="color: #ff6b6b;"></i></h1>
+            <p>实时接收女朋友的点菜订单，请及时查看并准备哦~</p>
+            <div class="connection-status">
+                <div class="status-indicator" id="statusIndicator"></div>
+                <span id="statusText">连接中...</span>
+            </div>
+        </div>
+        
+        <div class="stats-bar" id="statsBar">
+            <div class="stat-item">
+                <div class="stat-number" id="totalOrders">0</div>
+                <div class="stat-label">总订单数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="todayOrders">0</div>
+                <div class="stat-label">今日订单</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="lastOrder">--:--</div>
+                <div class="stat-label">最后订单时间</div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="orders-section">
+                <h2 class="section-title"><i class="fas fa-bell"></i> 最新订单</h2>
+                <div class="orders-container" id="ordersContainer">
+                    <div class="no-orders">
+                        <i class="fas fa-bell-slash"></i>
+                        <h3>还没有订单哦~</h3>
+                        <p>等待小可爱的点菜</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="preferences-section">
+                <h2 class="section-title"><i class="fas fa-star"></i> 小可爱的口味偏好</h2>
+                <div class="preferences-list" id="preferencesList">
+                    <!-- 偏好会动态加载 -->
+                </div>
+                <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 15px;">
+                    <i class="fas fa-lightbulb" style="font-size: 24px; color: #FFD700; margin-bottom: 10px;"></i>
+                    <p style="color: #666;">记住她的喜好，她会更开心哦~</p>
+                </div>
+            </div>
+        </div>
+        
+        <button class="clear-orders" id="clearOrdersBtn">
+            <i class="fas fa-trash-alt"></i>
+            清空订单记录
+        </button>
+        
+        <div class="notification" id="notification">
+            <i class="fas fa-info-circle"></i>
+            <span id="notificationText">新消息</span>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+        // ============== 环境检测 ==============
+        const isVercel = window.location.hostname.includes('vercel.app') || 
+                        window.location.hostname.includes('.now.sh');
+        const isLocal = window.location.hostname === 'localhost' || 
+                        window.location.hostname === '127.0.0.1';
+        const API_BASE = isVercel ? '' : 'http://localhost:3000';
+        const SOCKET_PATH = isVercel ? '/api/socket' : '';
+        
+        console.log('当前环境:', {
+            hostname: window.location.hostname,
+            isVercel,
+            isLocal,
+            API_BASE,
+            SOCKET_PATH
+        });
+        
+        // ============== 全局变量 ==============
+        let socket;
+        let orders = [];
+        let preferences = { likes: [], dislikes: [] };
+        
+        // ============== Socket连接 ==============
+        function initSocket() {
+            if (isVercel) {
+                // Vercel环境
+                socket = io({
+                    path: SOCKET_PATH,
+                    transports: ['polling', 'websocket']
+                });
+            } else {
+                // 本地环境
+                socket = io('http://localhost:3000', {
+                    transports: ['polling', 'websocket']
+                });
+            }
+            
+            const statusIndicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            
+            socket.on('connect', () => {
+                console.log('✅ 已连接到服务器');
+                statusIndicator.classList.add('connected');
+                statusText.textContent = '已连接';
+                socket.emit('register', 'boyfriend');
+                showNotification('连接成功！等待接收订单...', 'info');
+            });
+            
+            socket.on('connected', (data) => {
+                console.log(data.message);
+            });
+            
+            socket.on('disconnect', () => {
+                console.log('❌ 连接断开');
+                statusIndicator.classList.remove('connected');
+                statusText.textContent = '连接断开';
+                showNotification('连接断开，请刷新页面重试', 'error');
+            });
+            
+            socket.on('new-order', (data) => {
+                console.log('收到新订单:', data.item?.name);
+                showNotification(data.message, 'new-order');
+                addOrder({
+                    type: 'item',
+                    time: data.time,
+                    message: data.message,
+                    item: data.item,
+                    id: Date.now() + Math.random()
+                });
+            });
+            
+            socket.on('order-complete', (data) => {
+                console.log('收到完整订单:', data.items?.length || 0 + '个菜品');
+                showNotification(data.message, 'complete-order');
+                addOrder({
+                    type: 'complete',
+                    time: data.time,
+                    message: data.message,
+                    items: data.items,
+                    total: data.total,
+                    id: Date.now() + Math.random()
+                });
+            });
+            
+            socket.on('connect_error', (error) => {
+                console.error('连接错误:', error);
+                statusText.textContent = '连接失败';
+                showNotification('服务器连接失败，请检查服务器是否运行', 'error');
+            });
+        }
+        
+        // ============== 加载用户偏好 ==============
+        async function loadPreferences() {
+            try {
+                const response = await fetch(`${API_BASE}/api/preferences`);
+                if (!response.ok) throw new Error('网络响应错误');
+                preferences = await response.json();
+                displayPreferences();
+            } catch (error) {
+                console.error('加载偏好失败:', error);
+                // 使用默认值
+                preferences = {
+                    likes: ['酸酸的', '西兰花', '芹菜', '花菜'],
+                    dislikes: ['胡萝卜', '蒜薹']
+                };
+                displayPreferences();
+                showNotification('偏好加载失败，使用默认值', 'warning');
+            }
+        }
+        
+        function displayPreferences() {
+            const container = document.getElementById('preferencesList');
+            container.innerHTML = '';
+            
+            // 显示喜好
+            if (preferences.likes && preferences.likes.length > 0) {
+                preferences.likes.forEach(item => {
+                    const pref = document.createElement('div');
+                    pref.className = 'preference-item';
+                    pref.innerHTML = `
+                        <div class="preference-icon likes">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="preference-text">
+                            <div class="preference-title">爱吃：${item}</div>
+                            <div class="preference-desc">记得多做这个哦~</div>
+                        </div>
+                    `;
+                    container.appendChild(pref);
+                });
+            }
+            
+            // 显示不喜欢的
+            if (preferences.dislikes && preferences.dislikes.length > 0) {
+                preferences.dislikes.forEach(item => {
+                    const pref = document.createElement('div');
+                    pref.className = 'preference-item';
+                    pref.innerHTML = `
+                        <div class="preference-icon dislikes">
+                            <i class="fas fa-times"></i>
+                        </div>
+                        <div class="preference-text">
+                            <div class="preference-title">不爱吃：${item}</div>
+                            <div class="preference-desc">一定不要放这个！</div>
+                        </div>
+                    `;
+                    container.appendChild(pref);
+                });
+            }
+            
+            if (preferences.likes.length === 0 && preferences.dislikes.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 30px; color: #888;">
+                        <i class="fas fa-question-circle fa-3x"></i>
+                        <p style="margin-top: 15px;">暂无偏好信息</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // ============== 添加订单 ==============
+        function addOrder(order) {
+            // 添加到开头
+            orders.unshift(order);
+            
+            // 限制最多保存50个订单
+            if (orders.length > 50) {
+                orders = orders.slice(0, 50);
+            }
+            
+            // 保存到本地存储
+            saveOrders();
+            
+            // 更新显示
+            displayOrders();
+            updateStats();
+            
+            // 播放提示音
+            playNotificationSound();
+        }
+        
+        // ============== 显示订单 ==============
+        function displayOrders() {
+            const container = document.getElementById('ordersContainer');
+            
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="no-orders">
+                        <i class="fas fa-bell-slash"></i>
+                        <h3>还没有订单哦~</h3>
+                        <p>等待小可爱的点菜</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            
+            orders.forEach(order => {
+                const orderClass = order.type === 'complete' ? 'complete-order' : 'new-item';
+                const badgeText = order.type === 'complete' ? '完整订单' : '单品';
+                const badgeClass = order.type === 'complete' ? 'complete' : 'item';
+                
+                html += `
+                    <div class="order-card ${orderClass}" data-id="${order.id}">
+                        <div class="order-header">
+                            <div class="order-type">
+                                <span class="order-badge ${badgeClass}">${badgeText}</span>
+                                <span style="color: #666; font-size: 14px;">ID: ${order.id.toString().slice(-6)}</span>
+                            </div>
+                            <span class="order-time">${order.time}</span>
+                        </div>
+                        <div class="order-message">
+                            <i class="fas ${order.type === 'complete' ? 'fa-clipboard-list' : 'fa-utensils'}"></i>
+                            ${order.message}
+                        </div>
+                `;
+                
+                if (order.type === 'item' && order.item) {
+                    html += `
+                        <div class="order-items">
+                            <div class="order-item">
+                                <div class="order-item-name">${order.item.name}</div>
+                                <div class="order-item-price">${order.item.price}元</div>
+                            </div>
+                        </div>
+                    `;
+                } else if (order.type === 'complete' && order.items && order.items.length > 0) {
+                    html += '<div class="order-items">';
+                    
+                    order.items.forEach(item => {
+                        html += `
+                            <div class="order-item">
+                                <div class="order-item-name">${item.name}</div>
+                                <div class="order-item-price">${item.price}元</div>
+                            </div>
+                        `;
+                    });
+                    
+                    html += `
+                            <div class="order-total">
+                                总计：${order.total}元
+                                <span style="font-size: 14px; color: #888; margin-left: 10px;">
+                                    (${order.items.length}个菜品)
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                html += `</div>`;
+            });
+            
+            container.innerHTML = html;
+            
+            // 为新的订单添加高亮效果
+            setTimeout(() => {
+                const newCards = document.querySelectorAll('.order-card.new-item');
+                newCards.forEach(card => {
+                    card.classList.remove('new-item');
+                });
+            }, 2000);
+        }
+        
+        // ============== 更新统计 ==============
+        function updateStats() {
+            // 更新总订单数
+            document.getElementById('totalOrders').textContent = orders.length;
+            
+            // 更新今日订单数
+            const today = new Date().toDateString();
+            const todayOrders = orders.filter(order => {
+                const orderDate = new Date(order.time || order.id).toDateString();
+                return orderDate === today;
+            }).length;
+            document.getElementById('todayOrders').textContent = todayOrders;
+            
+            // 更新最后订单时间
+            if (orders.length > 0) {
+                const lastOrder = orders[0];
+                document.getElementById('lastOrder').textContent = lastOrder.time.split(' ')[1] || lastOrder.time;
+            }
+        }
+        
+        // ============== 显示通知 ==============
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const text = document.getElementById('notificationText');
+            const icon = notification.querySelector('i');
+            
+            text.textContent = message;
+            
+            // 设置样式
+            notification.className = 'notification';
+            
+            switch(type) {
+                case 'new-order':
+                    notification.classList.add('new-order');
+                    icon.className = 'fas fa-bell';
+                    break;
+                case 'complete-order':
+                    notification.classList.add('complete-order');
+                    icon.className = 'fas fa-clipboard-check';
+                    break;
+                case 'error':
+                    icon.className = 'fas fa-exclamation-circle';
+                    break;
+                default:
+                    icon.className = 'fas fa-info-circle';
+            }
+            
+            notification.classList.add('show');
+            
+            // 自动隐藏
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+        
+        // ============== 播放提示音 ==============
+        function playNotificationSound() {
+            try {
+                // 创建简单的提示音
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (error) {
+                console.log('音频播放失败，可能浏览器不支持');
+            }
+        }
+        
+        // ============== 保存订单到本地存储 ==============
+        function saveOrders() {
+            try {
+                localStorage.setItem('girlfriendOrders', JSON.stringify(orders));
+            } catch (error) {
+                console.error('保存订单失败:', error);
+            }
+        }
+        
+        // ============== 从本地存储加载订单 ==============
+        function loadOrders() {
+            try {
+                const saved = localStorage.getItem('girlfriendOrders');
+                if (saved) {
+                    orders = JSON.parse(saved);
+                    displayOrders();
+                    updateStats();
+                }
+            } catch (error) {
+                console.error('加载订单失败:', error);
+            }
+        }
+        
+        // ============== 清空订单 ==============
+        function clearOrders() {
+            if (orders.length === 0) {
+                showNotification('当前没有订单记录', 'info');
+                return;
+            }
+            
+            if (confirm(`确定要清空所有订单记录吗？\n当前有 ${orders.length} 个订单`)) {
+                orders = [];
+                localStorage.removeItem('girlfriendOrders');
+                displayOrders();
+                updateStats();
+                showNotification('已清空所有订单记录', 'info');
+            }
+        }
+        
+        // ============== 初始化 ==============
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始化连接
+            initSocket();
+            
+            // 加载偏好
+            loadPreferences();
+            
+            // 加载保存的订单
+            loadOrders();
+            
+            // 绑定事件
+            document.getElementById('clearOrdersBtn').addEventListener('click', clearOrders);
+            
+            // 显示欢迎消息
+            setTimeout(() => {
+                if (socket && socket.connected) {
+                    showNotification('欢迎使用！等待接收小可爱的订单~', 'info');
+                }
+            }, 1000);
+            
+            // 页面可见性变化时重连
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden && socket && !socket.connected) {
+                    showNotification('重新连接服务器...', 'info');
+                    socket.connect();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "couple-food-ordering",
+  "version": "2.0.0",
+  "description": "情侣点菜软件 - 云端版本",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "vercel-dev": "vercel dev",
+    "vercel-deploy": "vercel --prod",
+    "build": "echo 'Building for Vercel...'"
+  },
+  "keywords": ["情侣", "点菜", "云端", "实时"],
+  "author": "你的名字",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

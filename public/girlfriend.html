@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小可爱的点菜单 💕</title>
+    <!-- 使用本地字体，避免网络问题 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Ma Shan Zheng', cursive, 'Arial Rounded MT Bold', sans-serif;
+            background: linear-gradient(135deg, #ffcce6 0%, #ff99cc 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #ff3399;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* 头部样式 */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 10px 25px rgba(255, 105, 180, 0.3);
+            border: 3px solid #ff99cc;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            animation: sparkle 3s infinite linear;
+        }
+        
+        @keyframes sparkle {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .header h1 {
+            color: #ff3366;
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 0px rgba(255, 182, 193, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            color: #ff66b2;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .preferences-tags {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .pref-tag {
+            background: #ffe6f2;
+            color: #ff66b2;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            border: 2px dashed #ff99cc;
+        }
+        
+        .pref-tag.dislike {
+            background: #ffe6e6;
+            color: #ff6666;
+        }
+        
+        .love-icon {
+            color: #ff3366;
+            margin: 0 10px;
+            animation: heartbeat 1.5s infinite;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        /* 购物车图标 */
+        .cart-icon {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            background: white;
+            padding: 18px;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            cursor: pointer;
+            z-index: 1000;
+            border: 3px solid #ff99cc;
+            transition: all 0.3s ease;
+        }
+        
+        .cart-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        
+        .cart-icon i {
+            font-size: 24px;
+            color: #ff66b2;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff3366;
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid white;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* 筛选器样式 */
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 12px 25px;
+            border: none;
+            background: white;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.25);
+            color: #ff66b2;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+        
+        .filter-btn:hover::before {
+            left: 100%;
+        }
+        
+        .filter-btn.active {
+            background: #ff66b2;
+            color: white;
+            border-color: #ff3385;
+            box-shadow: 0 6px 18px rgba(255, 105, 180, 0.4);
+        }
+        
+        .filter-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.35);
+        }
+        
+        /* 菜单网格 */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .menu-item {
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid #ffccdd;
+        }
+        
+        .menu-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.3);
+        }
+        
+        .menu-item::after {
+            content: '❤️';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .menu-item:hover::after {
+            opacity: 1;
+        }
+        
+        .menu-item-image {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(45deg, #ffcce6, #ff99cc);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            color: white;
+            text-shadow: 3px 3px 5px rgba(0,0,0,0.2);
+            border-bottom: 3px solid #ff99cc;
+        }
+        
+        .menu-item-content {
+            padding: 25px;
+        }
+        
+        .menu-item h3 {
+            color: #ff3366;
+            margin-bottom: 12px;
+            font-size: 1.6em;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .menu-item p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-size: 16px;
+            min-height: 50px;
+        }
+        
+        .tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .tag {
+            background: #ffe6f2;
+            color: #ff66b2;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            border: 1px solid #ffccdd;
+        }
+        
+        .tag.period {
+            background: #ffccd5;
+            color: #ff3366;
+            font-weight: bold;
+        }
+        
+        .add-to-cart {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ff66b2, #ff3385);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-family: inherit;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .add-to-cart:hover {
+            background: linear-gradient(135deg, #ff3385, #ff0066);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 51, 133, 0.4);
+        }
+        
+        .add-to-cart.added {
+            background: linear-gradient(135deg, #33cc33, #28a428);
+            animation: pulse 0.5s;
+        }
+        
+        .price {
+            font-size: 28px;
+            color: #ff3366;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 15px;
+            font-family: 'ZCOOL QingKe HuangYou', sans-serif;
+        }
+        
+        /* 购物车模态框 */
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .cart-content {
+            background: white;
+            padding: 35px;
+            border-radius: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            border: 3px solid #ff99cc;
+            position: relative;
+        }
+        
+        .cart-content::before {
+            content: '🛒';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 40px;
+            background: white;
+            padding: 10px;
+            border-radius: 50%;
+            border: 3px solid #ff99cc;
+        }
+        
+        .cart-content h2 {
+            color: #ff3366;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 2em;
+            border-bottom: 2px dashed #ffccdd;
+            padding-bottom: 15px;
+        }
+        
+        .cart-items {
+            margin: 25px 0;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .cart-items::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .cart-items::-webkit-scrollbar-track {
+            background: #ffe6f2;
+            border-radius: 10px;
+        }
+        
+        .cart-items::-webkit-scrollbar-thumb {
+            background: #ff99cc;
+            border-radius: 10px;
+        }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+            border-bottom: 2px dashed #ffccdd;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        
+        .cart-item-info {
+            flex: 1;
+        }
+        
+        .cart-item-name {
+            font-weight: bold;
+            color: #ff3366;
+            font-size: 18px;
+        }
+        
+        .cart-item-desc {
+            color: #888;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .remove-btn {
+            background: #ff6666;
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .remove-btn:hover {
+            background: #ff3333;
+            transform: rotate(90deg);
+        }
+        
+        .cart-total {
+            text-align: right;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 3px solid #ffccdd;
+        }
+        
+        .cart-total h3 {
+            color: #ff3366;
+            font-size: 1.8em;
+        }
+        
+        .checkout-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #ff3366, #ff0066);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 20px;
+            cursor: pointer;
+            margin-top: 25px;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            letter-spacing: 2px;
+        }
+        
+        .checkout-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 51, 102, 0.4);
+        }
+        
+        .close-cart {
+            width: 100%;
+            padding: 15px;
+            background: #666;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        
+        .close-cart:hover {
+            background: #555;
+        }
+        
+        /* 通知样式 */
+        .notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            transform: translateY(150px);
+            opacity: 0;
+            transition: all 0.5s ease;
+            z-index: 3000;
+            border-left: 6px solid #ff66b2;
+            max-width: 400px;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .notification i {
+            color: #ff66b2;
+            margin-right: 15px;
+            font-size: 24px;
+        }
+        
+        /* 连接状态 */
+        .connection-status {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ccc;
+        }
+        
+        .status-dot.connected {
+            background: #4CAF50;
+            animation: blink 2s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2em;
+            }
+            
+            .menu-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 20px;
+            }
+            
+            .cart-icon {
+                top: 15px;
+                right: 15px;
+                padding: 15px;
+            }
+            
+            .filters {
+                gap: 10px;
+            }
+            
+            .filter-btn {
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+            
+            .notification {
+                left: 20px;
+                right: 20px;
+                max-width: calc(100% - 40px);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-heart love-icon"></i> 小可爱的点菜单 <i class="fas fa-heart love-icon"></i></h1>
+            <p>想吃什么随便点，男朋友来做~ 全部免费！</p>
+            <div class="preferences-tags">
+                <span class="pref-tag">❤️ 爱吃：酸酸的、西兰花、芹菜、花菜</span>
+                <span class="pref-tag dislike">💔 不爱吃：胡萝卜、蒜薹</span>
+            </div>
+        </div>
+        
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">全部菜品</button>
+            <button class="filter-btn" data-filter="period">经期友好</button>
+            <button class="filter-btn" data-filter="sour">酸酸的开胃菜</button>
+            <button class="filter-btn" data-filter="broccoli">西兰花系列</button>
+            <button class="filter-btn" data-filter="healthy">健康清淡</button>
+        </div>
+        
+        <div class="menu-grid" id="menuContainer">
+            <!-- 菜品会动态加载到这里 -->
+        </div>
+        
+        <div class="cart-icon" id="cartIcon">
+            <i class="fas fa-shopping-cart"></i>
+            <div class="cart-count" id="cartCount">0</div>
+        </div>
+        
+        <div class="cart-modal" id="cartModal">
+            <div class="cart-content">
+                <h2><i class="fas fa-shopping-cart"></i> 我的购物车</h2>
+                <div class="cart-items" id="cartItems">
+                    <!-- 购物车内容 -->
+                </div>
+                <div class="cart-total">
+                    <h3>总计: <span id="cartTotal">0</span> 元</h3>
+                </div>
+                <button class="checkout-btn" id="checkoutBtn">
+                    <i class="fas fa-paper-plane"></i> 发送订单给男朋友
+                </button>
+                <button class="close-cart" onclick="closeCart()">
+                    <i class="fas fa-times"></i> 继续点菜
+                </button>
+            </div>
+        </div>
+        
+        <div class="notification" id="notification">
+            <i class="fas fa-check-circle"></i>
+            <span id="notificationText">消息提示</span>
+        </div>
+        
+        <div class="connection-status" id="connectionStatus">
+            <div class="status-dot" id="statusDot"></div>
+            <span id="statusText">连接中...</span>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+        // ============== 环境检测 ==============
+        const isVercel = window.location.hostname.includes('vercel.app') || 
+                        window.location.hostname.includes('.now.sh');
+        const isLocal = window.location.hostname === 'localhost' || 
+                        window.location.hostname === '127.0.0.1';
+        const API_BASE = isVercel ? '' : 'http://localhost:3000';
+        const SOCKET_PATH = isVercel ? '/api/socket' : '';
+        
+        console.log('当前环境:', {
+            hostname: window.location.hostname,
+            isVercel,
+            isLocal,
+            API_BASE,
+            SOCKET_PATH
+        });
+        
+        // ============== 全局变量 ==============
+        let socket;
+        let cart = [];
+        let allMenuItems = [];
+        
+        // ============== Socket连接 ==============
+        function initSocket() {
+            if (isVercel) {
+                // Vercel环境
+                socket = io({
+                    path: SOCKET_PATH,
+                    transports: ['polling', 'websocket']
+                });
+            } else {
+                // 本地环境
+                socket = io('http://localhost:3000', {
+                    transports: ['polling', 'websocket']
+                });
+            }
+            
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            
+            socket.on('connect', () => {
+                console.log('✅ 已连接到服务器');
+                statusDot.classList.add('connected');
+                statusText.textContent = '已连接';
+                socket.emit('register', 'girlfriend');
+                showNotification('连接成功！可以开始点菜啦~', 'success');
+            });
+            
+            socket.on('connected', (data) => {
+                console.log(data.message);
+            });
+            
+            socket.on('disconnect', () => {
+                console.log('❌ 连接断开');
+                statusDot.classList.remove('connected');
+                statusText.textContent = '连接断开';
+                showNotification('连接断开，请刷新页面重试', 'error');
+            });
+            
+            socket.on('order-confirmed', (data) => {
+                showNotification(data.message, 'success');
+            });
+            
+            socket.on('checkout-complete', (data) => {
+                showNotification(data.message, 'success');
+                cart = [];
+                updateCart();
+                closeCart();
+            });
+            
+            socket.on('connect_error', (error) => {
+                console.error('连接错误:', error);
+                statusText.textContent = '连接失败';
+                showNotification('服务器连接失败，请检查服务器是否运行', 'error');
+            });
+        }
+        
+        // ============== 加载菜单 ==============
+        async function loadMenu() {
+            const container = document.getElementById('menuContainer');
+            container.innerHTML = '<div style="text-align: center; padding: 50px; font-size: 20px; color: #ff66b2;">加载菜单中... <i class="fas fa-spinner fa-spin"></i></div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/menu`);
+                if (!response.ok) throw new Error('网络响应错误');
+                allMenuItems = await response.json();
+                displayMenu(allMenuItems);
+                showNotification(`加载了 ${allMenuItems.length} 个菜品`, 'info');
+            } catch (error) {
+                console.error('加载菜单失败:', error);
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 50px; color: #ff6666;">
+                        <i class="fas fa-exclamation-triangle fa-3x"></i>
+                        <h3>菜单加载失败</h3>
+                        <p>${error.message}</p>
+                        <button onclick="loadMenu()" style="margin-top: 20px; padding: 10px 20px; background: #ff66b2; color: white; border: none; border-radius: 10px; cursor: pointer;">
+                            重试
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        // ============== 显示菜单 ==============
+        function displayMenu(items) {
+            const container = document.getElementById('menuContainer');
+            
+            if (items.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 50px; font-size: 20px; color: #ff66b2;">没有找到符合条件的菜品~</div>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            items.forEach(item => {
+                const isInCart = cart.some(cartItem => cartItem.id === item.id);
+                
+                const menuItem = document.createElement('div');
+                menuItem.className = 'menu-item';
+                menuItem.innerHTML = `
+                    <div class="menu-item-image">
+                        ${item.image}
+                    </div>
+                    <div class="menu-item-content">
+                        <h3>${item.name}</h3>
+                        <p>${item.description}</p>
+                        <div class="tags">
+                            ${item.tags.map(tag => 
+                                `<span class="tag ${tag === '经期友好' ? 'period' : ''}">${tag}</span>`
+                            ).join('')}
+                        </div>
+                        <button class="add-to-cart ${isInCart ? 'added' : ''}" onclick="addToCart(${item.id})" data-id="${item.id}">
+                            <i class="fas ${isInCart ? 'fa-check' : 'fa-plus'}"></i>
+                            ${isInCart ? '已添加' : '加入购物车'}
+                        </button>
+                        <div class="price">${item.price}元</div>
+                    </div>
+                `;
+                container.appendChild(menuItem);
+            });
+        }
+        
+        // ============== 添加到购物车 ==============
+        function addToCart(itemId) {
+            const item = allMenuItems.find(i => i.id === itemId);
+            if (!item) return;
+            
+            // 检查是否已在购物车
+            const existingIndex = cart.findIndex(cartItem => cartItem.id === itemId);
+            
+            if (existingIndex === -1) {
+                // 不在购物车，添加
+                cart.push({...item, quantity: 1});
+                updateCart();
+                
+                // 发送通知给男朋友
+                socket.emit('add-to-cart', { item: item });
+                
+                // 更新按钮状态
+                const button = document.querySelector(`[data-id="${itemId}"]`);
+                if (button) {
+                    const icon = button.querySelector('i');
+                    icon.className = 'fas fa-check';
+                    button.innerHTML = '<i class="fas fa-check"></i> 已添加';
+                    button.classList.add('added');
+                    
+                    // 添加动画效果
+                    button.style.animation = 'none';
+                    setTimeout(() => {
+                        button.style.animation = 'pulse 0.5s';
+                    }, 10);
+                }
+                
+                // 购物车图标动画
+                const cartIcon = document.getElementById('cartIcon');
+                cartIcon.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    cartIcon.style.transform = 'scale(1)';
+                }, 300);
+            } else {
+                // 已在购物车，提示
+                showNotification('这个菜已经在购物车里啦~', 'info');
+            }
+        }
+        
+        // ============== 从购物车移除 ==============
+        function removeFromCart(itemId) {
+            const index = cart.findIndex(item => item.id === itemId);
+            if (index !== -1) {
+                cart.splice(index, 1);
+                updateCart();
+                
+                // 更新按钮状态
+                const button = document.querySelector(`[data-id="${itemId}"]`);
+                if (button) {
+                    button.innerHTML = '<i class="fas fa-plus"></i> 加入购物车';
+                    button.classList.remove('added');
+                }
+            }
+        }
+        
+        // ============== 更新购物车 ==============
+        function updateCart() {
+            // 更新数量
+            const cartCount = document.getElementById('cartCount');
+            cartCount.textContent = cart.length;
+            
+            // 更新购物车内容
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            
+            cartItems.innerHTML = '';
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #888;">
+                        <i class="fas fa-shopping-cart fa-3x"></i>
+                        <p style="margin-top: 15px; font-size: 18px;">购物车是空的哦~</p>
+                        <p style="font-size: 14px;">快去选些好吃的吧！</p>
+                    </div>
+                `;
+                cartTotal.textContent = '0';
+                return;
+            }
+            
+            let total = 0;
+            
+            cart.forEach((item) => {
+                total += item.price * (item.quantity || 1);
+                
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-desc">${item.description}</div>
+                    </div>
+                    <div class="cart-item-controls">
+                        <div style="font-size: 20px; color: #ff3366; min-width: 60px; text-align: right;">
+                            ${item.price}元
+                        </div>
+                        <button class="remove-btn" onclick="removeFromCart(${item.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                cartItems.appendChild(cartItem);
+            });
+            
+            cartTotal.textContent = total;
+        }
+        
+        // ============== 显示购物车 ==============
+        function showCart() {
+            document.getElementById('cartModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // ============== 关闭购物车 ==============
+        function closeCart() {
+            document.getElementById('cartModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // ============== 提交订单 ==============
+        function checkout() {
+            if (cart.length === 0) {
+                showNotification('购物车是空的哦，先选点好吃的吧~', 'warning');
+                return;
+            }
+            
+            if (!socket.connected) {
+                showNotification('网络连接已断开，请刷新页面重试', 'error');
+                return;
+            }
+            
+            socket.emit('checkout', {
+                items: cart,
+                total: 0,
+                message: `今天想吃这些菜哦~ 一共 ${cart.length} 个菜`
+            });
+            
+            showNotification('订单发送中...', 'info');
+        }
+        
+        // ============== 显示通知 ==============
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const text = document.getElementById('notificationText');
+            const icon = notification.querySelector('i');
+            
+            text.textContent = message;
+            
+            // 设置图标
+            switch(type) {
+                case 'success':
+                    icon.className = 'fas fa-check-circle';
+                    notification.style.borderLeftColor = '#4CAF50';
+                    break;
+                case 'error':
+                    icon.className = 'fas fa-exclamation-circle';
+                    notification.style.borderLeftColor = '#ff4444';
+                    break;
+                case 'warning':
+                    icon.className = 'fas fa-exclamation-triangle';
+                    notification.style.borderLeftColor = '#ff9900';
+                    break;
+                default:
+                    icon.className = 'fas fa-info-circle';
+                    notification.style.borderLeftColor = '#ff66b2';
+            }
+            
+            notification.classList.add('show');
+            
+            // 自动隐藏
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // ============== 过滤菜品 ==============
+        async function filterMenu(filter) {
+            try {
+                let filteredItems = allMenuItems;
+                
+                switch(filter) {
+                    case 'period':
+                        const periodResponse = await fetch(`${API_BASE}/api/period-friendly`);
+                        filteredItems = await periodResponse.json();
+                        break;
+                    case 'sour':
+                        const sourResponse = await fetch(`${API_BASE}/api/sour-dishes`);
+                        filteredItems = await sourResponse.json();
+                        break;
+                    case 'broccoli':
+                        const broccoliResponse = await fetch(`${API_BASE}/api/broccoli-dishes`);
+                        filteredItems = await broccoliResponse.json();
+                        break;
+                    case 'healthy':
+                        filteredItems = allMenuItems.filter(item => 
+                            item.tags.includes('健康') || 
+                            item.tags.includes('清淡') ||
+                            item.category === '健康餐'
+                        );
+                        break;
+                }
+                
+                displayMenu(filteredItems);
+                showNotification(`找到 ${filteredItems.length} 个${getFilterName(filter)}`, 'info');
+            } catch (error) {
+                console.error('过滤失败:', error);
+                showNotification('过滤失败，请重试', 'error');
+            }
+        }
+        
+        function getFilterName(filter) {
+            const names = {
+                'all': '菜品',
+                'period': '经期友好菜品',
+                'sour': '酸味菜品',
+                'broccoli': '西兰花菜品',
+                'healthy': '健康菜品'
+            };
+            return names[filter] || '菜品';
+        }
+        
+        // ============== 初始化 ==============
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始化连接
+            initSocket();
+            
+            // 加载菜单
+            loadMenu();
+            
+            // 绑定事件
+            document.getElementById('cartIcon').addEventListener('click', showCart);
+            document.getElementById('checkoutBtn').addEventListener('click', checkout);
+            
+            // 筛选按钮事件
+            document.querySelectorAll('.filter-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.dataset.filter;
+                    if (filter === 'all') {
+                        displayMenu(allMenuItems);
+                    } else {
+                        filterMenu(filter);
+                    }
+                });
+            });
+            
+            // 点击模态框外部关闭
+            document.getElementById('cartModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeCart();
+                }
+            });
+            
+            // 键盘快捷键
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeCart();
+                }
+            });
+            
+            // 显示欢迎消息
+            setTimeout(() => {
+                if (socket && socket.connected) {
+                    showNotification('欢迎使用情侣点菜软件！💕', 'success');
+                }
+            }, 1000);
+        });
+        
+        // ============== 页面可见性变化时重连 ==============
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && socket && !socket.connected) {
+                showNotification('重新连接服务器...', 'info');
+                socket.connect();
+            }
+        });
+    </script>
+</body>
+</html>
